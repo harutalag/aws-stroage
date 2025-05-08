@@ -1,0 +1,30 @@
+version: '3'
+services:
+  php:
+    image: php:8.1-fpm
+    container_name: app-php
+    volumes:
+      - ./:/var/www
+    networks:
+      - app-network
+
+  nginx:
+    ports:
+      - "${NGINX_PORT:-8080}:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    container_name: app-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
